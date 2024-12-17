@@ -19,9 +19,6 @@
 # Set strict error handling
 $ErrorActionPreference = "Stop"
 
-# Script version
-$ScriptVersion = "1.0.0"
-
 # Helper function to display status messages with consistent formatting
 function Write-Status {
     param(
@@ -157,24 +154,25 @@ function Remove-ExistingConfigurations {
 
 # Guide the user through certificate installation process
 function Install-Certificate {
-    Write-Status "Certificate installation..."
+    Write-Status "Checking certificate status..."
+    
+    Write-Host @"
+
+PLEASE NOTE: 
+The WiFi networks will NOT work without a valid Polimi certificate installed.
+If you don't have a valid certificate already installed, you must download
+and install one for the networks to function properly.
+"@ -ForegroundColor Yellow
     
     if (Test-ValidCertificate -Verbose) {
-        $choice = Read-Host "`nA valid certificate is already installed. Install new one anyway? (Y/N)"
-        if ($choice -ne 'Y' -and $choice -ne 'y') {
-            Write-Host "Keeping existing certificate."
+        Write-Host "`nA valid certificate is already installed."
+        $choice = Read-Host "Would you like to continue with the existing certificate? (Y/N)"
+        if ($choice -eq 'Y' -or $choice -eq 'y') {
             return
         }
     }
     
-    try {
-        # Open certificate generation page in default browser
-        Start-Process "https://aunicalogin.polimi.it/aunicalogin/getservizio.xml?id_servizio=2108"
-    } catch {
-        throw "Failed to open certificate generation page: $_"
-    }
-    
-    Write-Host "`nPlease follow these steps:" -ForegroundColor Yellow
+    Write-Host "`nCertificate Installation Steps:" -ForegroundColor Yellow
     Write-Host "1. Log in to the Polimi portal"
     Write-Host "2. Download and save the certificate file"
     Write-Host "3. Double-click the downloaded certificate"
@@ -183,10 +181,19 @@ function Install-Certificate {
     Write-Host "6. Accept default settings and click 'Next'"
     Write-Host "7. Click 'Finish'"
     
-    Read-Host "`nPress Enter after completing the certificate installation"
-    
-    if (-not (Test-ValidCertificate)) {
-        throw "No valid certificate detected. Please try the installation again."
+    $installChoice = Read-Host "`nWould you like to install a new certificate? (Y/N)"
+    if ($installChoice -eq 'Y' -or $installChoice -eq 'y') {
+        try {
+            # Open certificate generation page in default browser
+            Start-Process "https://aunicalogin.polimi.it/aunicalogin/getservizio.xml?id_servizio=2108"
+        } catch {
+            Write-Error "Failed to open certificate generation page: $_"
+            Write-Host "You can manually visit: https://aunicalogin.polimi.it/aunicalogin/getservizio.xml?id_servizio=2108"
+        }
+        Write-Host "`nPlease follow the steps shown above to complete the installation."
+        Read-Host "`nPress Enter after completing the certificate installation"
+    } else {
+        Read-Host "`nPress Enter to continue with network configuration"
     }
 }
 
@@ -299,6 +306,9 @@ function Main {
     Write-Host @"
 Polimi WiFi Certificate Configuration Script v$ScriptVersion
 ================================================
+
+IMPORTANT: A valid Polimi network certificate is required for the WiFi to work.
+Without installing this certificate, the networks will not function properly.
 "@ -ForegroundColor Green
     
     try {
@@ -316,7 +326,14 @@ Polimi WiFi Certificate Configuration Script v$ScriptVersion
         $duration = (Get-Date) - $startTime
         Write-Status "Configuration completed successfully! ($([math]::Round($duration.TotalSeconds, 1)) seconds)" -Color "Green"
         
+Write-Host "`nFirst Network Connection Instructions:" -ForegroundColor Yellow
+Write-Host "When you first try to connect to the configured networks:"
+Write-Host "1. You will be asked if you want to connect using your certificate"
+Write-Host "2. Select your certificate when prompted"
+Write-Host "3. For username, enter: codicepersona@polimi.it (example: 12345678@polimi.it)"
+
         Write-Host @"
+
 Important Notes:
 - Certificate expires after 2 years
 - Email notification sent 15 days before expiration
