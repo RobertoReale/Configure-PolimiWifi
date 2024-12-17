@@ -63,7 +63,7 @@ Se incontri problemi:
 1. Verifica di aver installato correttamente il certificato
 2. Controlla che il certificato non sia scaduto
 3. Assicurati di utilizzare il formato corretto per il nome utente
-4. Se necessario, prova a rimuovere manualmente le configurazioni di rete esistenti
+4. Se necessario, prova a rimuovere manualmente le configurazioni di rete esistenti (elimina i certificati scaduti ed elimina le reti WiFi del Politecnico di Milano dall'elenco delle reti note di Windows)
 
 ## Disclaimer
 
