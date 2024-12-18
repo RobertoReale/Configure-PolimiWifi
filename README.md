@@ -63,8 +63,19 @@ Se incontri problemi:
 1. Verifica di aver installato correttamente il certificato
 2. Controlla che il certificato non sia scaduto
 3. Assicurati di utilizzare il formato corretto per il nome utente
-4. Se necessario, prova a rimuovere manualmente le configurazioni di rete esistenti (elimina i certificati scaduti ed elimina le reti WiFi del Politecnico di Milano dall'elenco delle reti note di Windows)
+4. e necessario, rimuovi manualmente le vecchie configurazioni:
 
+   - Rimuovi i certificati scaduti:
+      1. Premi Win + R, digita certmgr.msc e premi Invio
+      2. Naviga a "Personale" > "Certificati"
+      3. Identifica e rimuovi i certificati Polimi scaduti
+
+   - Rimuovi le reti WiFi precedenti:
+
+      1. Vai in "Impostazioni" > "Rete e Internet" > "Wi-Fi"
+      2. Clicca su "Gestisci reti note"
+      3. Rimuovi le voci relative a "polimi-protected", "polimi_protected" e "eduroam"
+    
 ## Disclaimer
 
 Questo script è fornito "così com'è", senza garanzie di alcun tipo. L'autore non si assume alcuna responsabilità per eventuali problemi o danni derivanti dall'utilizzo di questo script.
