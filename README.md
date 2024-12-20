@@ -6,7 +6,6 @@ Script PowerShell per la configurazione automatica delle reti WiFi del Politecni
 
 Questo script automatizza la configurazione delle seguenti reti WiFi del Politecnico di Milano:
 - polimi-protected
-- polimi_protected
 - eduroam
 
 Lo script implementa il metodo di **Configurazione con certificato (TLS)** seguendo esattamente la [guida ufficiale del Politecnico di Milano per Windows](https://www.ict.polimi.it/wifi/connessione-permanente/). 
@@ -74,7 +73,7 @@ Se incontri problemi:
 
       1. Vai in "Impostazioni" > "Rete e Internet" > "Wi-Fi"
       2. Clicca su "Gestisci reti note"
-      3. Rimuovi le voci relative a "polimi-protected", "polimi_protected" e "eduroam"
+      3. Rimuovi le voci relative a "polimi-protected" e "eduroam"
     
 ## Disclaimer
 
