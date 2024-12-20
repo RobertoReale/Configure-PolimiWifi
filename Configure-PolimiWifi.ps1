@@ -5,7 +5,6 @@
 #
 # This script automates the configuration of Politecnico di Milano's WiFi networks:
 # - polimi-protected
-# - polimi_protected
 # - eduroam
 # with certificate-based authentication (TLS) according to the official ICT Services guide.
 #
@@ -126,7 +125,7 @@ function Remove-ExistingConfigurations {
     }
     
     # Remove known network profiles
-    $networks = @("polimi-protected", "polimi_protected", "eduroam")
+    $networks = @("polimi-protected", "eduroam")
     foreach ($network in $networks) {
         try {
             if ($network -in $existingProfiles) {
@@ -320,7 +319,6 @@ Without installing this certificate, the networks will not function properly.
         
         # Configure all networks
         Set-WifiNetwork -NetworkName "polimi-protected"
-        Set-WifiNetwork -NetworkName "polimi_protected"
         Set-WifiNetwork -NetworkName "eduroam"
         
         $duration = (Get-Date) - $startTime
