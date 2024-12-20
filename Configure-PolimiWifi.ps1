@@ -33,6 +33,32 @@ function Write-Error {
     Write-Host "`n[!] $Message" -ForegroundColor Red
 }
 
+# Get user's network selection
+function Get-NetworkSelection {
+    Write-Host @"
+    
+Available Networks:
+1. polimi-protected
+2. eduroam
+3. Configure both networks
+    
+Please select an option (1-3):
+"@ -ForegroundColor Yellow
+    
+    do {
+        $selection = Read-Host "Enter your choice"
+        switch ($selection) {
+            "1" { return @("polimi-protected") }
+            "2" { return @("eduroam") }
+            "3" { return @("polimi-protected", "eduroam") }
+            default {
+                Write-Host "Invalid selection. Please enter 1, 2, or 3." -ForegroundColor Red
+                $selection = $null
+            }
+        }
+    } while ($null -eq $selection)
+}
+
 # Check if WiFi adapter is present and enabled
 function Test-WifiAdapter {
     Write-Status "Checking WiFi adapter..."
@@ -303,7 +329,7 @@ function Main {
     $startTime = Get-Date
     
     Write-Host @"
-Polimi WiFi Certificate Configuration Script v$ScriptVersion
+Polimi WiFi Certificate Configuration Script
 ================================================
 
 IMPORTANT: A valid Polimi network certificate is required for the WiFi to work.
@@ -317,18 +343,22 @@ Without installing this certificate, the networks will not function properly.
         Remove-ExistingConfigurations
         Install-Certificate
         
-        # Configure all networks
-        Set-WifiNetwork -NetworkName "polimi-protected"
-        Set-WifiNetwork -NetworkName "eduroam"
+        # Get user's network selection
+        $selectedNetworks = Get-NetworkSelection
+        
+        # Configure selected networks
+        foreach ($network in $selectedNetworks) {
+            Set-WifiNetwork -NetworkName $network
+        }
         
         $duration = (Get-Date) - $startTime
         Write-Status "Configuration completed successfully! ($([math]::Round($duration.TotalSeconds, 1)) seconds)" -Color "Green"
         
-Write-Host "`nFirst Network Connection Instructions:" -ForegroundColor Yellow
-Write-Host "When you first try to connect to the configured networks:"
-Write-Host "1. You will be asked if you want to connect using your certificate"
-Write-Host "2. Select your certificate when prompted"
-Write-Host "3. For username, enter: codicepersona@polimi.it (example: 12345678@polimi.it)"
+        Write-Host "`nFirst Network Connection Instructions:" -ForegroundColor Yellow
+        Write-Host "When you first try to connect to the configured networks:"
+        Write-Host "1. You will be asked if you want to connect using your certificate"
+        Write-Host "2. Select your certificate when prompted"
+        Write-Host "3. For username, enter: codicepersona@polimi.it (example: 12345678@polimi.it)"
 
         Write-Host @"
 
